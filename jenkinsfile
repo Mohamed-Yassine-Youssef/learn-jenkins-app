@@ -3,35 +3,24 @@ pipeline {
 
     stages { 
         stage('Build') {
-            agent {
-                docker {
+            agent{
+                docker{
                     image 'node:18-alpine'
                     reuseNode true
-                    args '-v /tmp/npm-cache:/root/.npm' // Cache npm modules
                 }
             }
             steps { 
-                sh '''
-                set -e  # Exit on any command failure
-                echo "Cleaning npm cache and removing node_modules..."
-                rm -rf node_modules package-lock.json # Clean previous installs
-                
-                echo "Setting npm cache to a writable directory..."
-                npm config set cache /tmp/npm-cache --global # Set cache to a writable location
-
-                echo "Installing npm dependencies..."
-                npm install --loglevel=verbose # Generate package-lock.json and install dependencies
-
-                echo "Installing exact versions..."
-                npm ci --loglevel=verbose # Now this should succeed
-                
-                echo "Building the project..."
-                npm run build --loglevel=verbose # Build the project
-                
-                echo "Listing files after build..."
-                ls -la
-                '''
+                 sh '''
+                 ls -la
+                 node --version 
+                 npm --version
+                 npm ci
+                 npm run build
+                 la -la
+                 '''
             }
         }
+        
+         
     }
 }
