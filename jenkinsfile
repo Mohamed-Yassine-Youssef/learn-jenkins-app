@@ -58,6 +58,10 @@ environment{
             }
             steps { 
                 sh '''
+                export NPM_CONFIG_CACHE=$PWD/.npm
+                
+                # Create npm cache directory
+                mkdir -p $NPM_CONFIG_CACHE
              npm install netlify-cli --legacy-peer-deps
              node_modules/.bin/netlify --version
              node_modules/.bin/netlify status
