@@ -3,23 +3,36 @@ pipeline {
 
     stages { 
         stage('Build') {
-            agent{
-                docker{
+            agent {
+                docker {
                     image 'node:18-alpine'
                     reuseNode true
                 }
             }
             steps { 
-                 sh '''
-                 rm -rf node_modules package-lock.json
-                 chown -R $(whoami) ~/.npm
-                 npm i
-                 npm run build
-                 
-                 '''
+                sh '''
+                # Remove existing node_modules and package-lock.json
+                rm -rf node_modules package-lock.json
+                
+                # Create npm cache directory
+                mkdir -p ~/.npm
+                
+                # Change ownership of the npm cache directory
+                chown -R root:root ~/.npm
+                
+                # Set npm cache to a writable directory
+                npm config set cache ~/.npm --global
+
+                # Install dependencies
+                npm install --loglevel=verbose
+
+                # Run the build
+                npm run build --loglevel=verbose
+
+                # List files after build
+                ls -la
+                '''
             }
         }
-        
-         
     }
 }
