@@ -16,6 +16,9 @@ pipeline {
                 echo "Cleaning npm cache and removing node_modules..."
                 rm -rf node_modules package-lock.json # Clean previous installs
                 
+                echo "Setting npm cache to a writable directory..."
+                npm config set cache /tmp/npm-cache --global # Set cache to a writable location
+
                 echo "Installing npm dependencies..."
                 npm install --loglevel=verbose # Generate package-lock.json and install dependencies
 
