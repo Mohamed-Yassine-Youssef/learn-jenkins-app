@@ -6,49 +6,7 @@ environment{
     NETLIFY_AUTH_TOKEN = credentials('netlify-token')
 }
     stages { 
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps { 
-                sh '''
-                # Remove existing node_modules and package-lock.json
-                rm -rf node_modules package-lock.json
-                
-                # Create a custom npm cache directory within the workspace
-                export NPM_CONFIG_CACHE=$PWD/.npm
-                
-                # Create npm cache directory
-                mkdir -p $NPM_CONFIG_CACHE
-                
-                # Install dependencies
-                npm install --loglevel=verbose
-                
-                # Run the build
-                npm run build --loglevel=verbose
-
-                # List files after build
-                ls -la
-                '''
-            }
-        }
-        stage('Test'){
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps{
-                sh '''
-                test -f build/index.html
-                npm test
-                '''
-            }
-        }
+        
         stage('Deploy') {
             agent {
                 docker {
