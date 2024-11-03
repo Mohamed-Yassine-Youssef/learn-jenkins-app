@@ -14,11 +14,15 @@ pipeline {
                 sh '''
                 set -e  # Exit on any command failure
                 echo "Cleaning npm cache and removing node_modules..."
-                rm -rf node_modules package-lock.json # Clean previous installs if they exist
-                npm cache clean --force # Clear the npm cache
+                rm -rf node_modules package-lock.json # Clean previous installs
                 
-                echo "Installing npm..."
-                npm ci --loglevel=verbose # Install dependencies
+                echo "Installing npm dependencies..."
+                npm install --loglevel=verbose # Generate package-lock.json and install dependencies
+
+                echo "Installing exact versions..."
+                npm ci --loglevel=verbose # Now this should succeed
+                
+                echo "Building the project..."
                 npm run build --loglevel=verbose # Build the project
                 
                 echo "Listing files after build..."
