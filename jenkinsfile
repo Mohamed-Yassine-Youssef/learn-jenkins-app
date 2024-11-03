@@ -3,25 +3,39 @@ pipeline {
 
     stages { 
         stage('Build') {
-            agent{
-                docker{
+            agent {
+                docker {
                     image 'node:18-alpine'
                     reuseNode true
                 }
             }
             steps { 
-                 sh '''
-                 ls -la
-                 node --version 
-                 npm --version
-                 rm -rf node_modules package-lock.json
-                 npm i
-                 npm run build
-                 la -la
-                 '''
+                sh '''
+                set -e  # Exit on any command failure
+                
+                echo "Listing files in the workspace..."
+                ls -la
+                
+                echo "Node and npm versions..."
+                node --version 
+                npm --version
+                
+                echo "Cleaning npm cache and removing node_modules..."
+                rm -rf node_modules package-lock.json
+                
+                echo "Setting npm cache to a writable directory..."
+                npm config set cache /tmp/npm-cache --global
+                
+                echo "Installing npm dependencies..."
+                npm install --loglevel=verbose # Use npm install to generate package-lock.json
+                
+                echo "Building the project..."
+                npm run build --loglevel=verbose
+                
+                echo "Listing files after build..."
+                ls -la
+                '''
             }
         }
-        
-         
     }
 }
