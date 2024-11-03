@@ -12,6 +12,7 @@ pipeline {
             steps { 
                  sh '''
                  rm -rf node_modules package-lock.json
+                 chown -R $(whoami) ~/.npm
                  npm i
                  npm run build
                  
