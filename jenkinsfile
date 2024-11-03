@@ -14,18 +14,15 @@ pipeline {
                 # Remove existing node_modules and package-lock.json
                 rm -rf node_modules package-lock.json
                 
+                # Create a custom npm cache directory within the workspace
+                export NPM_CONFIG_CACHE=$PWD/.npm
+                
                 # Create npm cache directory
-                mkdir -p ~/.npm
+                mkdir -p $NPM_CONFIG_CACHE
                 
-                # Change ownership of the npm cache directory
-                chown -R root:root ~/.npm
-                
-                # Set npm cache to a writable directory
-                npm config set cache ~/.npm --global
-
                 # Install dependencies
                 npm install --loglevel=verbose
-
+                
                 # Run the build
                 npm run build --loglevel=verbose
 
